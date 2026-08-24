@@ -1,0 +1,14 @@
+{
+  "name": "mi-primer-servidor",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "servidor.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node servidor.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

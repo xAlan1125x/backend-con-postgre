@@ -1,0 +1,7 @@
+Servidor del punto 7 del documento con nuevo endpoint agregado mediante TDP.
+
+Ruta: /api/mensaje
+Método HTTP: POST
+Formato de datos (Body): JSON (ejemplo: {"mensaje": "Hola XP"})
+Código de respuesta: 201 Created
+Respuesta (JSON): {"recibido": "Hola XP"}

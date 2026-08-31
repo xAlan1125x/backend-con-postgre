@@ -1,14 +1,26 @@
 {
-  "name": "mi-primer-servidor",
+  "name": "mi-backend-express",
   "version": "1.0.0",
   "type": "module",
-  "main": "servidor.js",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "node --test",
-    "start": "node servidor.js"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:gherkin": "node --import tsx --test tests/*.test.ts",
+    "test:categorias": "node --import tsx --test tests/categorias.test.ts",
+    "test:productos": "node --import tsx --test tests/productos.test.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.19.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/express": "^4.17.0",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
 }

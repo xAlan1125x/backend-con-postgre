@@ -4,10 +4,10 @@ export class ProductoController {
     constructor(service) {
         this.service = service;
     }
-    obtenerTodos = (_req, res, next) => {
+    obtenerTodos = async (_req, res, next) => {
         try {
             console.log("[PRODUCTO CONTROLLER] obtenerTodos() - Iniciando lectura de todos los productos");
-            const productos = this.service.obtenerTodos();
+            const productos = await this.service.obtenerTodos();
             console.log("[PRODUCTO CONTROLLER] obtenerTodos() - Se obtuvieron", productos.length, "productos");
             res.json({ data: productos });
         }
@@ -15,11 +15,11 @@ export class ProductoController {
             next(err);
         }
     };
-    obtenerPorId = (req, res, next) => {
+    obtenerPorId = async (req, res, next) => {
         try {
             const id = Number(req.params.id);
             console.log("[PRODUCTO CONTROLLER] obtenerPorId() - Buscando producto con ID:", id);
-            const producto = this.service.obtenerPorId(id);
+            const producto = await this.service.obtenerPorId(id);
             console.log("[PRODUCTO CONTROLLER] obtenerPorId() - Producto encontrado:", producto.nombre);
             res.json({ data: producto });
         }
@@ -27,11 +27,11 @@ export class ProductoController {
             next(err);
         }
     };
-    crear = (req, res, next) => {
+    crear = async (req, res, next) => {
         try {
             console.log("[PRODUCTO CONTROLLER] crear() - Recibida solicitud para crear producto:", req.body.nombre);
             const dto = req.body;
-            const nuevo = this.service.crear(dto);
+            const nuevo = await this.service.crear(dto);
             console.log("[PRODUCTO CONTROLLER] crear() - Producto creado con ID:", nuevo.id);
             res.status(201).json({ data: nuevo });
         }
@@ -39,12 +39,12 @@ export class ProductoController {
             next(err);
         }
     };
-    actualizar = (req, res, next) => {
+    actualizar = async (req, res, next) => {
         try {
             const id = Number(req.params.id);
             console.log("[PRODUCTO CONTROLLER] actualizar() - Actualizando producto con ID:", id);
             const dto = req.body;
-            const actualizado = this.service.actualizar(id, dto);
+            const actualizado = await this.service.actualizar(id, dto);
             console.log("[PRODUCTO CONTROLLER] actualizar() - Producto actualizado:", actualizado?.nombre);
             res.json({ data: actualizado });
         }
@@ -52,11 +52,11 @@ export class ProductoController {
             next(err);
         }
     };
-    eliminar = (req, res, next) => {
+    eliminar = async (req, res, next) => {
         try {
             const id = Number(req.params.id);
             console.log("[PRODUCTO CONTROLLER] eliminar() - Eliminando producto con ID:", id);
-            this.service.eliminar(id);
+            await this.service.eliminar(id);
             console.log("[PRODUCTO CONTROLLER] eliminar() - Producto eliminado exitosamente");
             res.status(204).send();
         }

@@ -1,0 +1,27 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Categoria {
+  id          Int        @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  productos   Producto[]
+
+  @@map("categorias")
+}
+
+model Producto {
+  id          Int        @id @default(autoincrement())
+  nombre      String
+  precio      Float
+  categoriaId Int?       @map("categoria_id")
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id])
+
+  @@map("productos")
+}

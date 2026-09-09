@@ -5,10 +5,10 @@ import { ProductoService } from "./producto.service.js";
 export class ProductoController {
   constructor(private readonly service: ProductoService) {}
 
-  obtenerTodos = (_req: Request, res: Response, next: NextFunction) => {
+  obtenerTodos = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       console.log("[PRODUCTO CONTROLLER] obtenerTodos() - Iniciando lectura de todos los productos");
-      const productos = this.service.obtenerTodos();
+      const productos = await this.service.obtenerTodos();
       console.log("[PRODUCTO CONTROLLER] obtenerTodos() - Se obtuvieron", productos.length, "productos");
       res.json({ data: productos });
     } catch (err) {
@@ -16,11 +16,11 @@ export class ProductoController {
     }
   };
 
-  obtenerPorId = (req: Request, res: Response, next: NextFunction) => {
+  obtenerPorId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
       console.log("[PRODUCTO CONTROLLER] obtenerPorId() - Buscando producto con ID:", id);
-      const producto = this.service.obtenerPorId(id);
+      const producto = await this.service.obtenerPorId(id);
       console.log("[PRODUCTO CONTROLLER] obtenerPorId() - Producto encontrado:", producto.nombre);
       res.json({ data: producto });
     } catch (err) {
@@ -28,11 +28,11 @@ export class ProductoController {
     }
   };
 
-  crear = (req: Request, res: Response, next: NextFunction) => {
+  crear = async (req: Request, res: Response, next: NextFunction) => {
     try {
       console.log("[PRODUCTO CONTROLLER] crear() - Recibida solicitud para crear producto:", req.body.nombre);
       const dto: CrearProductoDto = req.body;
-      const nuevo = this.service.crear(dto);
+      const nuevo = await this.service.crear(dto);
       console.log("[PRODUCTO CONTROLLER] crear() - Producto creado con ID:", nuevo.id);
       res.status(201).json({ data: nuevo });
     } catch (err) {
@@ -40,12 +40,12 @@ export class ProductoController {
     }
   };
 
-  actualizar = (req: Request, res: Response, next: NextFunction) => {
+  actualizar = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
       console.log("[PRODUCTO CONTROLLER] actualizar() - Actualizando producto con ID:", id);
       const dto: ActualizarProductoDto = req.body;
-      const actualizado = this.service.actualizar(id, dto);
+      const actualizado = await this.service.actualizar(id, dto);
       console.log("[PRODUCTO CONTROLLER] actualizar() - Producto actualizado:", actualizado?.nombre);
       res.json({ data: actualizado });
     } catch (err) {
@@ -53,11 +53,11 @@ export class ProductoController {
     }
   };
 
-  eliminar = (req: Request, res: Response, next: NextFunction) => {
+  eliminar = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
       console.log("[PRODUCTO CONTROLLER] eliminar() - Eliminando producto con ID:", id);
-      this.service.eliminar(id);
+      await this.service.eliminar(id);
       console.log("[PRODUCTO CONTROLLER] eliminar() - Producto eliminado exitosamente");
       res.status(204).send();
     } catch (err) {

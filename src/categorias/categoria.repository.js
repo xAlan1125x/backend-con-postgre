@@ -1,14 +1,27 @@
-import db from "../database/sqlite.js";
+import prisma from "../database/prisma.js";
+
 export class CategoriaRepository {
-    obtenerTodas() {
-        console.log("[CATEGORIA REPOSITORY] obtenerTodas() - Ejecutando query SELECT * FROM categorias");
-        const resultado = db.prepare("SELECT * FROM categorias").all();
+    async obtenerTodas() {
+        console.log("[CATEGORIA REPOSITORY] obtenerTodas() - Ejecutando consulta Prisma");
+        const categorias = await prisma.categoria.findMany();
+        const resultado = categorias.map((categoria) => ({
+            id: categoria.id,
+            nombre: categoria.nombre,
+            descripcion: categoria.descripcion ?? ""
+        }));
         console.log("[CATEGORIA REPOSITORY] obtenerTodas() - Query completada, registros obtenidos:", resultado.length);
         return resultado;
     }
-    buscarPorId(id) {
+    async buscarPorId(id) {
         console.log("[CATEGORIA REPOSITORY] buscarPorId() - Buscando categoría con ID:", id);
-        const resultado = db.prepare("SELECT * FROM categorias WHERE id = ?").get(id);
+        const categoria = await prisma.categoria.findUnique({ where: { id } });
+        const resultado = categoria
+            ? {
+                id: categoria.id,
+                nombre: categoria.nombre,
+                descripcion: categoria.descripcion ?? ""
+            }
+            : undefined;
         if (!resultado) {
             console.log("[CATEGORIA REPOSITORY] buscarPorId() - No se encontró categoría con ID:", id);
         }
@@ -17,31 +30,45 @@ export class CategoriaRepository {
         }
         return resultado;
     }
-    guardar(dto) {
+    async guardar(dto) {
         console.log("[CATEGORIA REPOSITORY] guardar() - Insertando nueva categoría:", dto.nombre);
-        const stmt = db.prepare("INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)");
-        const result = stmt.run(dto.nombre, dto.descripcion || "");
-        const categoria = { id: Number(result.lastInsertRowid), nombre: dto.nombre, descripcion: dto.descripcion || "" };
+        const categoriaGuardada = await prisma.categoria.create({
+            data: {
+                nombre: dto.nombre,
+                descripcion: dto.descripcion ?? null
+            }
+        });
+        const categoria = {
+            id: categoriaGuardada.id,
+            nombre: categoriaGuardada.nombre,
+            descripcion: categoriaGuardada.descripcion ?? ""
+        };
         console.log("[CATEGORIA REPOSITORY] guardar() - Categoría insertada con ID:", categoria.id);
         return categoria;
     }
-    actualizar(id, dto) {
+    async actualizar(id, dto) {
         console.log("[CATEGORIA REPOSITORY] actualizar() - Actualizando categoría ID:", id);
-        const actual = this.buscarPorId(id);
+        const actual = await this.buscarPorId(id);
         if (!actual)
             return undefined;
         const nombre = dto.nombre ?? actual.nombre;
         const descripcion = dto.descripcion ?? actual.descripcion;
-        console.log("[CATEGORIA REPOSITORY] actualizar() - Ejecutando UPDATE para ID:", id);
-        db.prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?").run(nombre, descripcion, id);
-        const actualizada = { id, nombre, descripcion };
+        const categoriaActualizada = await prisma.categoria.update({
+            where: { id },
+            data: { nombre, descripcion }
+        });
+        const actualizada = {
+            id: categoriaActualizada.id,
+            nombre: categoriaActualizada.nombre,
+            descripcion: categoriaActualizada.descripcion ?? ""
+        };
         console.log("[CATEGORIA REPOSITORY] actualizar() - Categoría actualizada:", actualizada.nombre);
         return actualizada;
     }
-    eliminar(id) {
+    async eliminar(id) {
         console.log("[CATEGORIA REPOSITORY] eliminar() - Eliminando categoría ID:", id);
-        const result = db.prepare("DELETE FROM categorias WHERE id = ?").run(id);
-        console.log("[CATEGORIA REPOSITORY] eliminar() - DELETE completado, filas afectadas:", result.changes);
-        return result.changes > 0;
+        const result = await prisma.categoria.deleteMany({ where: { id } });
+        console.log("[CATEGORIA REPOSITORY] eliminar() - DELETE completado, filas afectadas:", result.count);
+        return result.count > 0;
     }
 }

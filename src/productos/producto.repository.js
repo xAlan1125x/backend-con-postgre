@@ -8,6 +8,7 @@ export class ProductoRepository {
             id: producto.id,
             nombre: producto.nombre,
             precio: producto.precio,
+            stock: producto.stock,
             categoria_id: producto.categoriaId
         }));
         console.log("[PRODUCTO REPOSITORY] obtenerTodos() - Query completada, registros obtenidos:", resultado.length);
@@ -21,6 +22,7 @@ export class ProductoRepository {
                 id: producto.id,
                 nombre: producto.nombre,
                 precio: producto.precio,
+                stock: producto.stock,
                 categoria_id: producto.categoriaId
             }
             : undefined;
@@ -38,6 +40,7 @@ export class ProductoRepository {
             data: {
                 nombre: dto.nombre,
                 precio: dto.precio,
+                stock: dto.stock ?? 0,
                 categoriaId: dto.categoria_id
             }
         });
@@ -45,6 +48,7 @@ export class ProductoRepository {
             id: productoGuardado.id,
             nombre: productoGuardado.nombre,
             precio: productoGuardado.precio,
+            stock: productoGuardado.stock,
             categoria_id: productoGuardado.categoriaId
         };
         console.log("[PRODUCTO REPOSITORY] guardar() - Producto insertado con ID:", producto.id);
@@ -58,14 +62,16 @@ export class ProductoRepository {
         const nombre = dto.nombre ?? actual.nombre;
         const precio = dto.precio ?? actual.precio;
         const categoria_id = dto.categoria_id ?? actual.categoria_id;
+        const stock = dto.stock ?? actual.stock;
         const productoActualizado = await prisma.producto.update({
             where: { id },
-            data: { nombre, precio, categoriaId: categoria_id }
+            data: { nombre, precio, stock, categoriaId: categoria_id }
         });
         const actualizado = {
             id: productoActualizado.id,
             nombre: productoActualizado.nombre,
             precio: productoActualizado.precio,
+            stock: productoActualizado.stock,
             categoria_id: productoActualizado.categoriaId
         };
         console.log("[PRODUCTO REPOSITORY] actualizar() - Producto actualizado:", actualizado.nombre);

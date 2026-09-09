@@ -1,12 +1,21 @@
 {
+  "type": "module",
   "scripts": {
-    "postinstall": "prisma skills sync || exit 0"
+    "postinstall": "prisma skills sync || exit 0",
+    "build": "tsc",
+    "test": "node --test tests/*.test.js",
+    "start": "node dist/server.js"
   },
   "devDependencies": {
-    "prisma": "^5.22.0"
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "prisma": "^5.22.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-ui-express": "^5.0.1"
   }
 }

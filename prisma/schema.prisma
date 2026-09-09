@@ -16,12 +16,45 @@ model Categoria {
   @@map("categorias")
 }
 
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  email    String   @unique
+  pedidos  Pedido[]
+
+  @@map("usuarios")
+}
+
 model Producto {
-  id          Int        @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   nombre      String
   precio      Float
+  stock       Int       @default(0)
   categoriaId Int?       @map("categoria_id")
   categoria   Categoria? @relation(fields: [categoriaId], references: [id])
+  detalles    DetallePedido[]
 
   @@map("productos")
+}
+
+model Pedido {
+  id        Int             @id @default(autoincrement())
+  usuarioId Int             @map("usuario_id")
+  total     Float           @default(0)
+  usuario   Usuario         @relation(fields: [usuarioId], references: [id])
+  detalles  DetallePedido[]
+
+  @@map("pedidos")
+}
+
+model DetallePedido {
+  id         Int      @id @default(autoincrement())
+  pedidoId   Int      @map("pedido_id")
+  productoId Int      @map("producto_id")
+  cantidad   Int
+  precio     Float
+  pedido     Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  producto   Producto @relation(fields: [productoId], references: [id])
+
+  @@map("detalles_pedido")
 }
